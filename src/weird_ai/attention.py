@@ -1,5 +1,6 @@
 import torch
 import torch.nn as nn
+import random as rand
 
 
 class SimpleSelfAttention(nn.Module):
@@ -21,10 +22,39 @@ class SimpleSelfAttention(nn.Module):
 
         # TODO:
         # 1. Compute attention scores using matrix multiplication.
-        # 2. Normalize scores with softmax.
-        # 3. Compute context vectors as weighted sums of input vectors.
+        torch.manual_seed(8675309)
+        inputs = torch.tensor([ 
+            [0.43, 0.15, 0.89],
+            [0.55, 0.87, 0.66],
+            [0.57, 0.85, 0.64],
+            [0.22, 0.58, 0.33],])
 
-        raise NotImplementedError("Implement simple self-attention.")
+        query = inputs[1]
+        attn_scores=inputs @ inputs.T
+        """attn_scores= torch.empty(inputs.shape[0])for index, embedding in enumerate(inputs):
+        attn_scores[i] = torch.dot(index, query)
+        print(attn_scores) """
+
+        # 2. Normalize scores with softmax.
+        attn_weights = torch.softmax(attn_scores, dim=-1)
+
+        # 3. Compute context vectors as weighted sums of input vectors.
+        contextVectors = attn_weights @ inputs
+        #raise NotImplementedError("Implement simple self-attention.")
+        print(attn_weights)
+        print(attn_weights.shape)
+        print(contextVectors)
+        print(contextVectors.shape)
+        print()
+
+
+        return contextVectors, attn_weights
+
+
+
+string = "hdfhjfdwkhjd"
+model = SimpleSelfAttention()
+model(string)
 
 class SelfAttention(nn.Module):
     """
