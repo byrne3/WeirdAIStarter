@@ -20,7 +20,6 @@ class SimpleSelfAttention(nn.Module):
             attention_weights: Tensor of shape (num_tokens, num_tokens)
         """
 
-        # TODO:
         # 1. Compute attention scores using matrix multiplication.
         torch.manual_seed(8675309)
         inputs = torch.tensor([ 
@@ -31,9 +30,6 @@ class SimpleSelfAttention(nn.Module):
 
         query = inputs[1]
         attn_scores=inputs @ inputs.T
-        """attn_scores= torch.empty(inputs.shape[0])for index, embedding in enumerate(inputs):
-        attn_scores[i] = torch.dot(index, query)
-        print(attn_scores) """
 
         # 2. Normalize scores with softmax.
         attn_weights = torch.softmax(attn_scores, dim=-1)
@@ -41,20 +37,13 @@ class SimpleSelfAttention(nn.Module):
         # 3. Compute context vectors as weighted sums of input vectors.
         contextVectors = attn_weights @ inputs
         #raise NotImplementedError("Implement simple self-attention.")
-        print(attn_weights)
-        print(attn_weights.shape)
-        print(contextVectors)
-        print(contextVectors.shape)
-        print()
 
 
         return contextVectors, attn_weights
 
 
 
-string = "hdfhjfdwkhjd"
-model = SimpleSelfAttention()
-model(string)
+
 
 class SelfAttention(nn.Module):
     """
@@ -78,13 +67,24 @@ class SelfAttention(nn.Module):
             attention_weights: Tensor of shape (num_tokens, num_tokens)
         """
 
-        # TODO:
+        
         # 1. Compute queries, keys, and values.
-        # 2. Compute scaled attention scores.
-        # 3. Apply softmax.
-        # 4. Compute context vectors.
+        compedQueries = self.query(x) 
+        compedKeys = self.key(x)
+        compedValues = self.value(x)
 
-        raise NotImplementedError("Implement trainable self-attention.")
+        # 2. Compute scaled attention scores.
+        attnScores = compedQueries @ compedKeys.T
+        keyDim = compedKeys.shape[-1]
+        
+        # 3. Apply softmax.
+        attention_weights = torch.softmax(attnScores / keyDim**0.5, dim=-1)
+
+        # 4. Compute context vectors.
+        context_vectors = attention_weights @ compedValues
+
+        #raise NotImplementedError("Implement trainable self-attention.")
+        return context_vectors, attention_weights
 
 class CausalAttention(nn.Module):
     """
